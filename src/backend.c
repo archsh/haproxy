@@ -1389,7 +1389,7 @@ int backend_parse_balance(const char **args, char **err, struct proxy *curproxy)
 				/* hint: we store the position of the ending '/' (depth+1 if depth larger than 0) so
 				 * that we avoid a comparison while computing the hash.
 				 */
-				curproxy->uri_dirs_depth1 = atoi(args[arg+1])
+				curproxy->uri_dirs_depth1 = atoi(args[arg+1]);
 				if (curproxy->uri_dirs_depth1 > 0)
 					curproxy->uri_dirs_depth1 += 1;
 				arg += 2;
