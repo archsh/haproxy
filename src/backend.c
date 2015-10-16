@@ -203,12 +203,24 @@ struct server *get_server_uh(struct proxy *px, char *uri, int uri_len)
 		c = *end;
 		if (c == '/') {
 			slashes++;
-			if (slashes == px->uri_dirs_depth1) /* depth+1 */
+			if (px->uri_dirs_depth1 > 0 && slashes == px->uri_dirs_depth1) /* Only stops when depth larger than 0 */
 				break;
 		}
 		else if (c == '?' && !px->uri_whole)
 			break;
 		end++;
+	}
+	if (px->uri_dirs_depth1 < 0){ /* Re-build end pointer if depth is less than 0 */
+		slashes = 0;
+		while (end > start) {
+			c = *end;
+			if (c == '/') {
+				slashes++;
+				if (px->uri_dirs_depth1 + slashes == 0) /* depth+1 */
+					break;
+			}
+			end--;
+		}
 	}
 
 	hash = gen_hash(px, start, (end - start));
@@ -1370,14 +1382,16 @@ int backend_parse_balance(const char **args, char **err, struct proxy *curproxy)
 				arg += 2;
 			}
 			else if (!strcmp(args[arg], "depth")) {
-				if (!*args[arg+1] || (atoi(args[arg+1]) <= 0)) {
-					memprintf(err, "%s : '%s' expects a positive integer (got '%s').", args[0], args[arg], args[arg+1]);
+				if (!*args[arg+1] || (atoi(args[arg+1]) == 0)) {
+					memprintf(err, "%s : '%s' expects a non-zero integer (got '%s').", args[0], args[arg], args[arg+1]);
 					return -1;
 				}
-				/* hint: we store the position of the ending '/' (depth+1) so
+				/* hint: we store the position of the ending '/' (depth+1 if depth larger than 0) so
 				 * that we avoid a comparison while computing the hash.
 				 */
-				curproxy->uri_dirs_depth1 = atoi(args[arg+1]) + 1;
+				curproxy->uri_dirs_depth1 = atoi(args[arg+1])
+				if (curproxy->uri_dirs_depth1 > 0)
+					curproxy->uri_dirs_depth1 += 1;
 				arg += 2;
 			}
 			else if (!strcmp(args[arg], "whole")) {
