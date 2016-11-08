@@ -211,14 +211,14 @@ struct server *get_server_uh(struct proxy *px, char *uri, int uri_len)
 		c = *end;
 		if (c == '/') {
 			slashes++;
-			if (px->uri_dirs_depth1 > 0 && slashes == px->uri_dirs_depth1) /* Only stops when depth larger than 0 */
+			if (px->uri_dirs_depth1 > 0 && slashes == px->uri_dirs_depth1) /* Only stops when depth larger than 0 .SHENMC*/
 				break;
 		}
 		else if (c == '?' && !px->uri_whole)
 			break;
 		end++;
 	}
-	if (px->uri_dirs_depth1 < 0){ /* Re-build end pointer if depth is less than 0 */
+	if (px->uri_dirs_depth1 < 0){ /* Re-build end pointer if depth is less than 0 .SHENMC*/
 		slashes = 0;
 		while (end > start) {
 			c = *end;
