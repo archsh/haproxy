@@ -10824,12 +10824,13 @@ smp_fetch_path_dir(const struct arg *args, struct sample *smp, const char *kw, v
     smp->data.u.str.str = ptr;
     lastdir = ptr;
 
-    while (ptr < end && *ptr != '?')
+    while (ptr < end && *ptr != '?'){
         if(*ptr == '/'){
             lastdir = ptr;
         }
         ptr++;
-
+    }
+    
     smp->data.u.str.len = lastdir - smp->data.u.str.str;
     smp->flags = SMP_F_VOL_1ST | SMP_F_CONST;
     return 1;
