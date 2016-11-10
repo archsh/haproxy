@@ -1,0 +1,8 @@
+language: c
+
+install:
+        - sudo apt-get update -qq
+        - sudo apt-get install -qq libpcre3 libpcre3-dev libpcre++-dev libssl-dev openssl zlibc
+
+script:
+        - make TARGET=linux2628 USE_ZLIB=1 USE_OPENSSL=1 USE_PCRE=1
