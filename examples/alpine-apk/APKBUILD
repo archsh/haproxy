@@ -1,24 +1,25 @@
 # Contributor: Jeff Bilyk <jbilyk@gmail.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org> Mingcai SHEN <archsh@gmail.com>
 pkgname=haproxy
-pkgver=1.6.9.rev2
+pkgver=1.6.9
 _pkgmajorver=${pkgver%.*}
 pkgrel=1
 pkgdesc="A TCP/HTTP reverse proxy for high availability environments"
 url="http://haproxy.1wt.eu"
 arch="all"
 license="GPL"
-_luaver="5.3"
+# _luaver="5.3"
 depends=""
-makedepends="pcre-dev libressl-dev linux-headers lua${_luaver}-dev zlib-dev"
+# makedepends="pcre-dev openssl-dev linux-headers lua${_luaver}-dev zlib-dev"
+makedepends="pcre-dev openssl-dev linux-headers zlib-dev"
 install="haproxy.pre-install haproxy.pre-upgrade"
 subpackages="$pkgname-doc $pkgname-systemd-wrapper:wrapper"
 # https://github.com/archsh/haproxy/archive/1.6.9.rev2.tar.gz
-source="https://github.com/archsh/haproxy/archive/$pkgver.tar.gz
+source="https://github.com/archsh/haproxy/archive/$pkgver.rev2.tar.gz
 	haproxy.initd
 	haproxy.cfg"
 
-builddir="$srcdir/$pkgname-$pkgver"
+builddir="$srcdir/$pkgname-$pkgver.rev2"
 
 build() {
 	cd "$builddir"
@@ -27,9 +28,6 @@ build() {
 	     USE_PCRE=1 \
 	     USE_OPENSSL=1 \
 	     USE_ZLIB=1 \
-	     USE_LUA=1 \
-	     LUA_LIB=/usr/lib/lua${_luaver} \
-	     LUA_INC=/usr/include/lua${_luaver} \
 	     CFLAGS="$CFLAGS" \
 		|| return 1
 }
